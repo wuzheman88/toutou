@@ -17,7 +17,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/getuser', function(req, res){
-	var query = req.query;
+	var q = req.query;
 	var id = q.id;
 	if (!id){
 		res.end('no user id');
