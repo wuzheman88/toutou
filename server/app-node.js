@@ -18,7 +18,21 @@ app.get('/', function(req, res){
 
 app.get('/getuser', function(req, res){
 	var query = req.query;
-	res.send('ok');
+	var id = q.id;
+	if (!id){
+		res.end('no user id');
+	}
+	
+	var connection = mysql.createConnection(connconfig);
+	connection.connect();
+	connection.query('USE toutou');
+	
+	var sqlGetUser = 'SELECT * FROM seq_user WHERE user_id='+id;
+	connection.query(sqlGetUser, function(err, rows, fields){
+		if (err) throw err;
+		res.end( JSON.stringify(rows[0]) );
+		connection.end();		
+	});
 });
 
 app.get('/setuser',function(req, res){
@@ -31,9 +45,12 @@ app.get('/setuser',function(req, res){
 	var userPhone = q.phone;
 
 	if (!userName){
-		res.end('param error');
+		res.end('no user name');
 	}
-
+	if (!userFrom){
+		res.end('no from origin');
+	}
+	
 	var connection = mysql.createConnection(connconfig);
 	connection.connect();
 	//handleDisconnect(connection);
@@ -57,10 +74,10 @@ app.get('/setuser',function(req, res){
 				connection.end();
 			});
 		}else {
-			
+			res.send("bad user id");
 		}
 	});
-	res.send("ok");
+	res.end("ok");
 })
 
 app.listen(http_port);
