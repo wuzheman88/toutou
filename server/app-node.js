@@ -8,7 +8,7 @@ var connconfig = {
 	user: 'xiwan',
 	password: '1q2w3e4R'
 };
-var connection = mysql.createConnection(connconfig);
+
 
 var app = express();
 
@@ -34,8 +34,9 @@ app.get('/setuser',function(req, res){
 		res.end('param error');
 	}
 
-	//connection.connect();
-	handleDisconnect(connection);
+	var connection = mysql.createConnection(connconfig);
+	connection.connect();
+	//handleDisconnect(connection);
 	connection.query('USE toutou');
 	
 	var userId = 0;
@@ -53,13 +54,12 @@ app.get('/setuser',function(req, res){
 			var insertUser = "INSERT INTO tt_user VALUES("+userId+", '"+userName+"', '"+userPswd+"', '"+userFrom+"', '', '"+userSex+"', '"+userPhone+"', '"+userLoc+"', UNIX_TIMESTAMP(),  	UNIX_TIMESTAMP())";
 			connection.query(insertUser, function(err, rows, fields){
 				if (err) throw err;
-				connection.end();
 			});
 		}else {
 			
 		}
 	});
-
+	connection.end();
 	res.send("ok");
 })
 
