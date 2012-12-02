@@ -54,12 +54,12 @@ app.get('/setuser',function(req, res){
 			var insertUser = "INSERT INTO tt_user VALUES("+userId+", '"+userName+"', '"+userPswd+"', '"+userFrom+"', '', '"+userSex+"', '"+userPhone+"', '"+userLoc+"', UNIX_TIMESTAMP(),  	UNIX_TIMESTAMP())";
 			connection.query(insertUser, function(err, rows, fields){
 				if (err) throw err;
+				connection.end();
 			});
 		}else {
 			
 		}
 	});
-	connection.end();
 	res.send("ok");
 })
 
