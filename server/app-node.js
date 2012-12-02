@@ -48,19 +48,18 @@ app.get('/setuser',function(req, res){
 	
 	connection.query(sqlUserSeq, function(err, rows, fields){
 		if (err) throw err;	
-		userId = rows[0];
+		userId = rows[0].id;
+		if (userId){
+			var insertUser = "INSERT INTO tt_user VALUES("+userId+", '"+userName+"', '"+userPswd+"', '"+userFrom+"', '', '"+userSex+"', '"+userPhone+"', '"+userLoc+"', UNIX_TIMESTAMP(),  	UNIX_TIMESTAMP())";
+			connection.query(insertUser, function(err, rows, fields){
+				if (err) throw err;
+				connection.end();
+			});
+		}else {
+			
+		}
 	});
-	
-	if (userId){
-		var insertUser = "INSERT INTO tt_user VALUES("+userId+", '"+userName+"', '"+userPswd+"', '"+userFrom+"', '', '"+userSex+"', '"+userPhone+"', '"+userLoc+"', UNIX_TIMESTAMP(),  	UNIX_TIMESTAMP())";
-		connection.query(insertUser, function(err, rows, fields){
-			if (err) throw err;
-		});
-	}else {
-		
-	}
-	
-	connection.end();
+
 	res.send("ok");
 })
 
