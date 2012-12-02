@@ -39,9 +39,9 @@ app.get('/setuser',function(req, res){
 	connection.query('USE toutou');
 	
 	var userId = 0;
+	var sqlUpdateSeq = 'UPDATE seq_user SET id = id+1';
 	var sqlUserSeq = 'SELECT * FROM seq_user';
-	var sqlUpdateSeq = 'UPDATE seq_user SET id = id=1';
-
+	
 	connection.query(sqlUpdateSeq, function(err, rows, fields){
 		if (err) throw err;
 		connection.query(sqlUserSeq, function(err, rows, fields){
