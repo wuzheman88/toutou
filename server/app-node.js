@@ -43,10 +43,12 @@ app.get('/setuser',function(req, res){
 	var sqlUserSeq = 'SELECT * FROM seq_user';
 	
 	connection.query(sqlUpdateSeq, function(err, rows, fields){
-		if (err) throw err;
-		connection.query(sqlUserSeq, function(err, rows, fields){
-			userId = rows[0];
-		});
+		if (err) throw err;	
+	});
+	
+	connection.query(sqlUserSeq, function(err, rows, fields){
+		if (err) throw err;	
+		userId = rows[0];
 	});
 	
 	if (userId){
