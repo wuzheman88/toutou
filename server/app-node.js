@@ -34,16 +34,32 @@ app.get('/setuser',function(req, res){
 		res.end('param error');
 	}
 
-	var insertUser = "INSERT INTO tt_user VALUES("+(new Date()).getTime()+", \'"+userName+"\', '123456', \'"+userFrom+"\', \'\', \'"+userSex+"\', \'"+userPhone+"\', \'"+userLoc+"\', UNIX_TIMESTAMP(),  UNIX_TIMESTAMP())"
 	//connection.connect();
 	handleDisconnect(connection);
 	connection.query('USE toutou');
-	connection.query(insertUser, function(err, rows, fields){
+	
+	var userId = 0;
+	var sqlUserSeq = 'SELECT * FROM seq_user';
+	var sqlUpdateSeq = 'UPDATE seq_user SET id = id=1';
+
+	connection.query(sqlUpdateSeq, function(err, rows, fields){
 		if (err) throw err;
+		connection.query(sqlUserSeq, function(err, rows, fields){
+			userId = rows[0];
+		});
 	});
+	
+	if (userId){
+		var insertUser = "INSERT INTO tt_user VALUES("+userId+", '"+userName+"', '"+userPswd+"', '"+userFrom+"', '', '"+userSex+"', '"+userPhone+"', '"+userLoc+"', UNIX_TIMESTAMP(),  	UNIX_TIMESTAMP())";
+		connection.query(insertUser, function(err, rows, fields){
+			if (err) throw err;
+		});
+	}else {
+		
+	}
+	
 	connection.end();
-	//connection.destroy();
-	res.send("insert ok");
+	res.send("ok");
 })
 
 app.listen(http_port);
