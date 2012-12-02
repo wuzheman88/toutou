@@ -71,12 +71,12 @@ app.get('/setuser',function(req, res){
 			connection.query(insertUser, function(err, rows, fields){
 				if (err) throw err;
 				connection.end();
+				res.end( JSON.stringify({'id': userId}) );
 			});
 		}else {
-			res.send("bad user id");
+			res.end("bad user id");
 		}
 	});
-	res.end("ok");
 })
 
 app.listen(http_port);
