@@ -30,14 +30,20 @@ app.get('/setuser',function(req, res){
 	var userLoc = q.loc;
 	var userPhone = q.phone;
 
-	var insertUser = "INSERT INTO tt_user VALUES("+Math.random()+", \'"+userName+"\', '123456', \'"+userFrom+"\', \'\', \'"+userSex+"\', \'"+userPhone+"\', \'"+userLoc+"\', UNIX_TIMESTAMP(),  UNIX_TIMESTAMP())"
+	if (!userName){
+		res.end('param error');
+	}
+
+	var insertUser = "INSERT INTO tt_user VALUES("+(new Date()).getTime()+", \'"+userName+"\', '123456', \'"+userFrom+"\', \'\', \'"+userSex+"\', \'"+userPhone+"\', \'"+userLoc+"\', UNIX_TIMESTAMP(),  UNIX_TIMESTAMP())"
 	
 	connection.connect();
 	connection.query('USE toutou');
 	connection.query(insertUser, function(err, rows, fields){
 		if (err) throw err;
 	});
-	connection.end();
+	//connection.end();
+	connection.destroy();
+	res.send("insert ok");
 })
 
 app.listen(http_port);
