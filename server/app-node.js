@@ -3,12 +3,12 @@ var http_port = 8080;
 var crypto = require('crypto');
 var mysql = require('mysql');
 var express = require('express');
-
-var connection = mysql.createConnection({
+var connconfig = {
 	host: 'xw.cfjgm7a2aegj.us-east-1.rds.amazonaws.com',
 	user: 'xiwan',
 	password: '1q2w3e4R'
-});
+};
+var connection = mysql.createConnection(connconfig);
 
 var app = express();
 
@@ -35,14 +35,14 @@ app.get('/setuser',function(req, res){
 	}
 
 	var insertUser = "INSERT INTO tt_user VALUES("+(new Date()).getTime()+", \'"+userName+"\', '123456', \'"+userFrom+"\', \'\', \'"+userSex+"\', \'"+userPhone+"\', \'"+userLoc+"\', UNIX_TIMESTAMP(),  UNIX_TIMESTAMP())"
-	
-	connection.connect();
+	//connection.connect();
+	handleDisconnect(connection);
 	connection.query('USE toutou');
 	connection.query(insertUser, function(err, rows, fields){
 		if (err) throw err;
 	});
-	//connection.end();
-	connection.destroy();
+	connection.end();
+	//connection.destroy();
 	res.send("insert ok");
 })
 
@@ -51,4 +51,23 @@ console.log('express app start at port: ' + http_port);
 
 function md5 (text) {
   return crypto.createHash('md5').update(text).digest('hex');
-};
+}
+
+function handleDisconnect(connection) {
+  connection.on('error', function(err) {
+    if (!err.fatal) {
+      return;
+    }
+
+    if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+      throw err;
+    }
+
+    console.log('Re-connecting lost connection: ' + err.stack);
+
+    connection = mysql.createConnection(connconfig);
+    handleDisconnect(connection);
+    connection.connect();
+  });
+}
+
