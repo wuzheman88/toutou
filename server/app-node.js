@@ -26,8 +26,7 @@ app.get('/getuser', function(req, res){
 	var connection = mysql.createConnection(connconfig);
 	connection.connect();
 	connection.query('USE toutou');
-	
-	var sqlGetUser = 'SELECT * FROM seq_user WHERE user_id='+id;
+	var sqlGetUser = 'SELECT * FROM tt_user WHERE user_id='+id;
 	connection.query(sqlGetUser, function(err, rows, fields){
 		if (err) throw err;
 		res.end( JSON.stringify(rows[0]) );
